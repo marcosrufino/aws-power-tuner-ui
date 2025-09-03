@@ -15,7 +15,13 @@ export class PowerTunerOnlyStack extends cdk.Stack {
       },
       parameters: {
         'lambdaResource': `arn:aws:lambda:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:function:*`,
-        'PowerValues': '128,256,512,1024,1536,3008'
+        'PowerValues': '128,256,512',
+        'totalExecutionTimeout': '300',
+        'analysisType': 'cost',
+        'payloadS3Bucket': '',
+        'payloadS3Key': '',
+        'parallelInvocation': 'false',
+        'sleepingTime': '0'
       }
     });
 

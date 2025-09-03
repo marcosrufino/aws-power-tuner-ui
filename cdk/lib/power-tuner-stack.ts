@@ -24,7 +24,7 @@ export class PowerTunerStack extends cdk.Stack {
     let powerRoute = apiGateway.root.addResource('power-tuner');
 
     // Use provided State Machine ARN or create a placeholder
-    const stateMachineARN = props?.stateMachineArn || `arn:aws:states:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:stateMachine:aws-lambda-power-tuning`;
+    const stateMachineARN = props?.stateMachineArn || `arn:aws:states:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:stateMachine:aws-lambda-power-tuning-dev`;
 
     const powerTunerStepFunctionArn = stateMachineARN;
     const tunerRequestTemplate = JSON.stringify({
