@@ -6,8 +6,12 @@ import {
   EndpointType, PassthroughBehavior
 } from '@aws-cdk/aws-apigateway';
 
+export interface PowerTunerStackProps extends cdk.StackProps {
+  stateMachineArn?: string;
+}
+
 export class PowerTunerStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, props?: PowerTunerStackProps) {
     super(scope, id, props);
 
     let iamRole = this.setupLambdaRole(this);
@@ -19,18 +23,8 @@ export class PowerTunerStack extends cdk.Stack {
 
     let powerRoute = apiGateway.root.addResource('power-tuner');
 
-    // Create power tuner step function
-    const powerTuner = new sam.CfnApplication(this as any, 'powerTuner', {
-      location: {
-        applicationId: 'arn:aws:serverlessrepo:us-east-1:451282441545:applications/aws-lambda-power-tuning',
-        semanticVersion: '4.1.0'
-      },
-      parameters: {
-        'lambdaResource': `arn:aws:lambda:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:function:*`
-      }
-    });
-
-    const stateMachineARN = powerTuner.getAtt('Outputs.StateMachineARN').toString();
+    // Use provided State Machine ARN or create a placeholder
+    const stateMachineARN = props?.stateMachineArn || `arn:aws:states:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:stateMachine:aws-lambda-power-tuning`;
 
     const powerTunerStepFunctionArn = stateMachineARN;
     const tunerRequestTemplate = JSON.stringify({

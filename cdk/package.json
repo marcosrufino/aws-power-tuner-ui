@@ -34,7 +34,9 @@
     "cdk": "cdk",
     "synth": "cdk synth",
     "create-website-directory": "mkdir -p website-output",
+    "deploy-power-tuner": "npm run build && cdk deploy PowerTunerOnlyStack",
     "deploy-infra": "npm run create-website-directory && npm run build && cdk deploy PowerTunerInfraStack",
+    "deploy-all": "npm run create-website-directory && npm run build && cdk deploy --all",
     "deploy-website": "npm run build && cdk deploy PowerTunerWebsiteStack",
     "deploy-lambda": "npm run build && cdk deploy PowerTunerLambdaStack"
   },
