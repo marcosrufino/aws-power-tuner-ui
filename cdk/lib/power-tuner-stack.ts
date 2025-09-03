@@ -1,6 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import iam = require('@aws-cdk/aws-iam');
-import { LambdaPowerTuner } from 'cdk-lambda-powertuner';
+import sam = require('@aws-cdk/aws-sam');
 import {
   RestApi, AwsIntegration, RestApiProps,
   EndpointType, PassthroughBehavior
@@ -19,14 +19,18 @@ export class PowerTunerStack extends cdk.Stack {
 
     let powerRoute = apiGateway.root.addResource('power-tuner');
 
-    // Create power tuner step function using CDK construct
-    const powerTuner = new LambdaPowerTuner(this, 'powerTuner', {
-      lambdaResource: `arn:aws:lambda:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:function:*`,
-      powerValues: [128, 256, 512, 1024, 1536, 3008],
-      totalExecutionTimeout: 900
+    // Create power tuner step function
+    const powerTuner = new sam.CfnApplication(this as any, 'powerTuner', {
+      location: {
+        applicationId: 'arn:aws:serverlessrepo:us-east-1:451282441545:applications/aws-lambda-power-tuning',
+        semanticVersion: '4.1.0'
+      },
+      parameters: {
+        'lambdaResource': `arn:aws:lambda:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:function:*`
+      }
     });
 
-    const stateMachineARN = powerTuner.stateMachine.stateMachineArn;
+    const stateMachineARN = powerTuner.getAtt('Outputs.StateMachineARN').toString();
 
     const powerTunerStepFunctionArn = stateMachineARN;
     const tunerRequestTemplate = JSON.stringify({
