@@ -21,6 +21,9 @@
     "ui"
   ],
   "licence": "Apache",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "bin": {
     "power-tuner-infra": "bin/power-tuner-infra.js"
   },
